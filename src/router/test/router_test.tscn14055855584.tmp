@@ -6,8 +6,8 @@
 
 [sub_resource type="Resource" id="Resource_mfvjp"]
 script = ExtResource("3_65jt1")
-path = "/default/:force"
 extra_paths = Array[String](["/default"])
+path = "/default/:force"
 metadata/_custom_type_script = "uid://dv8fijxp65ihg"
 
 [node name="RouterTest" type="Node"]

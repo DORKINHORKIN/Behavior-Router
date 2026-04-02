@@ -1,12 +1,20 @@
+# test_route.gd
 class_name TestRoute
 extends Route
 
 const ParamAPI := Router.ParamAPI
 
-func execute(r: Router, _delta:=0.0):
-	var req: RouteContext = r.get_current_context()
 
-	var force = ParamAPI.toVector3(req.params, "force")
-	req.state["velocity"] = req.state.get("velocity", Vector3()) + force
+func execute(r: Router, delta := 0.0):
+	var result := super.execute(r, delta)
 
-	print(req.state)
+	var ctx: RouteContext = r.get_current_context()
+	var state := ctx.state if ctx.state else {}
+
+	var force := ParamAPI.toVector3(ctx.params, "force")
+	state["velocity"] = state.get("velocity", Vector3()) + force
+
+	ctx.state = state
+
+	print(state)
+	return result

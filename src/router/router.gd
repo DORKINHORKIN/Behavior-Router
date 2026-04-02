@@ -9,20 +9,48 @@ func _init(_routes) -> void:
 	route_map = generate_route_map(_routes)
 
 func set_route(route_path) :
-	context = make_context(route_path, route_map)
+	var result = make_context(route_path, route_map)
+	if (result):
+		# end previous
+		if (context):
+			for c : RouteContext in context:
+				if c.route:
+					c.route.exit(self)
+
+		context = result
+		#state new
+		for c : RouteContext in context:
+			if c.route:
+				c.route.enter(self)
 
 func process(_delta := 0.0, _context: Array[RouteContext] = context):
+	var process_result : = ProcessResult.Error
+
 	for c : RouteContext in _context:
 		if c.route:
-			c.route.execute(self, _delta)
+			process_result = c.route.execute(self, _delta)
 
-func get_current_context() -> RouteContext:
-	var size = context.size()
+			# if any route returns a complete status, stop processing
+			if process_result == ProcessResult.Error:
+				return ProcessResult.Error
+			elif process_result == ProcessResult.Complete:
+				return ProcessResult.Complete
+
+	return process_result
+
+func get_current_context(_context: Array[RouteContext] = context) -> RouteContext:
+	var size = _context.size()
 	if size > 0:
-		return context[size-1]
+		return _context[size-1]
 	return null
 
 # API
+enum ProcessResult {
+	Error,
+	Complete,
+	Continue
+}
+
 static func generate_route_map(routes: Array[Route]) -> Dictionary[String, Route]:
 	var map: Dictionary[String, Route] = {}
 	for route in routes:
