@@ -1,5 +1,6 @@
 extends Node
 
+signal request_path_changed(path: String)
 @export var request_path: String:
 	set(value):
 		request_path = value
@@ -7,14 +8,15 @@ extends Node
 			router.request(value)
 		request_path_changed.emit(value)
 
-signal request_path_changed(path: String)
 @export var initial_routes: Array[Route]
 
-@onready var router := Router.new(initial_routes)
 
 static func request(_path) -> Array[RequestData]:
 	return Router.generate_request_data(_path)
-const PathParams := Router.PathParams
+const ParamAPI := Router.ParamAPI
+
+@onready var router := Router.new(initial_routes)
+
 
 func _ready():
 	request_path = request_path
@@ -29,10 +31,10 @@ func _test():
 		print("Path: ", data.path)
 
 		if (data.params.get("velocity") != null):
-			print("Velocity: ", PathParams.toVector3(data.params, "velocity"))
+			print("Velocity: ", ParamAPI.toVector3(data.params, "velocity"))
 
 		if (data.params.get("lol") != null):
-			print("Lol: ", PathParams.toInt(data.params, "lol"))
+			print("Lol: ", ParamAPI.toInt(data.params, "lol"))
 
 		if (data.params.get("ha") != null):
 			print("Ha: ", data.params.get("ha"))

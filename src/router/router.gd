@@ -17,6 +17,12 @@ func process_request( _delta := 0.0, _data: Array[RequestData] = data):
 			req.route.execute(self, _delta)
 	data = _data
 
+func get_current_request() -> RequestData:
+	var size = data.size()
+	if size > 0:
+		return data[size-1]
+	return null
+
 # API
 static func generate_route_map(routes: Array[Route]) -> Dictionary[String, Route]:
 	var map: Dictionary[String, Route] = {}
@@ -41,7 +47,7 @@ static func generate_request_data(path = "", _route_map: Dictionary[String, Rout
 
 
 
-class PathParams extends RefCounted:
+class ParamAPI extends RefCounted:
 	static func toVector3(params: Dictionary[String, String], key: String) -> Vector3:
 		var result = Vector3()
 		var value = params.get(key)

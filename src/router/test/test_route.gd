@@ -1,14 +1,12 @@
 class_name TestRoute
 extends Route
 
+const ParamAPI := Router.ParamAPI
 
 func execute(r: Router, _delta:=0.0):
-	var this = r.data[r.data.size()-1]
-	var state = this["state"]
-	var params = {
-		force = Router.PathParams.toVector3(this.params, "force")
-	}
+	var req: RequestData = r.get_current_request()
 
-	this.state.set("velocity", this.state.get("velocity", Vector3()) + params.force)
-	print(this["state"])
-	pass
+	var force = ParamAPI.toVector3(req.params, "force")
+	req.state["velocity"] = req.state.get("velocity", Vector3()) + force
+
+	print(req.state)
