@@ -3,11 +3,11 @@ extends Resource
 
 @export var path: String = ""
 
-func enter(context: RoutingContext):
+func enter(_router: Router):
 	pass
 
-func exit(context: RoutingContext):
+func exit(_router: Router):
 	pass
 
-func execute(context: RoutingContext, delta:=0.0):
+func execute(_router: Router, delta:=0.0):
 	pass

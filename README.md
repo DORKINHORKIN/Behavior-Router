@@ -39,7 +39,7 @@ Behavior-Router/
     └── router/
         ├── route.gd           # Route base class (Resource)
         ├── router.gd          # Placeholder (empty RefCounted)
-        ├── router_context.gd  # Core: RoutingContext class
+        ├── router_context.gd  # Core: Router class
         ├── request_data.gd    # RequestData struct (Resource)
         └── test/
             ├── test.gd        # Test Node scene script
@@ -73,9 +73,9 @@ extends Resource
 - **Base class** for all route handlers (lines 1–13)
 - Exported property: `path: String` — the route path pattern
 - Three virtual methods:
-  - `enter(context: RoutingContext)` — called on route activation
-  - `exit(context: RoutingContext)` — called on route deactivation
-  - `execute(context: RoutingContext, delta:=0.0)` — called each frame
+  - `enter(context: Router)` — called on route activation
+  - `exit(context: Router)` — called on route deactivation
+  - `execute(context: Router, delta:=0.0)` — called each frame
 
 Routes are **Godot Resources**, meaning they can be serialized to `.tres` files and configured in the Inspector.
 
@@ -92,9 +92,9 @@ extends Resource
 
 ---
 
-#### `RoutingContext` — `src/router/router_context.gd`
+#### `Router` — `src/router/router_context.gd`
 ```gdscript
-class_name RoutingContext
+class_name Router
 extends Resource
 ```
 The **central hub** of the system (lines 1–76).
@@ -134,7 +134,7 @@ Overrides `execute()` to `print("Executing TestRoute with path: ", path)` (lines
 The **test driver** (lines 1–33):
 - `@export var request_path: String` — set to `"/:lol=1"` in `main.tscn:8`
 - `@export var initial_routes: Array[Route]` — populated in `router_test.tscn`
-- `@onready var context := RoutingContext.new(initial_routes)` — builds context at scene ready
+- `@onready var context := Router.new(initial_routes)` — builds context at scene ready
 - `_ready()`: fires first request
 - `_process(delta)`: re-fires every frame → routes execute continuously
 
@@ -146,12 +146,12 @@ There are **no signals**, **no groups**, **no message bus**, and **no dependency
 
 ```
 test.gd
-  └─ holds RoutingContext (created inline with @onready)
+  └─ holds Router (created inline with @onready)
        └─ holds Dictionary[String, Route]
             └─ Route.execute(context, delta)  ← called by process_request
 ```
 
-The `RoutingContext` reference is passed *into* route methods as the `context` argument — this is the only coupling point between routes and the context.
+The `Router` reference is passed *into* route methods as the `context` argument — this is the only coupling point between routes and the context.
 
 ---
 
@@ -231,7 +231,7 @@ The design replaces:
                                     │  @export initial_routes: [TestRoute{path="/:lol"}]
                                     │  @export request_path: "/:lol=1"
                                     │
-                                    ├─ @onready context = RoutingContext.new(initial_routes)
+                                    ├─ @onready context = Router.new(initial_routes)
                                     │                        │
                                     │                    route_map: {"/:lol" → TestRoute}
                                     │
@@ -254,4 +254,4 @@ The design replaces:
 
 ### Summary
 
-Behavior-Router is a **proof-of-concept, early-stage Godot 4.4 library** that replaces state machines with a URL-style hierarchical routing system. Routes are Godot `Resource` objects with path strings and an `execute(context, delta)` callback. A `RoutingContext` manages the route map and dispatches requests by parsing path strings into typed `RequestData` objects. The path format allows embedding typed parameters inline (`/:velocity=1,2,3`) which are converted to GDScript types via the `PathParams` utility. The `enter`/`exit` lifecycle hooks are defined but not yet wired up, the top-level `Router` class is an empty stub, and the only test is a manual print-based scene. There are no signals, no autoloads, no addons, and no test framework.
+Behavior-Router is a **proof-of-concept, early-stage Godot 4.4 library** that replaces state machines with a URL-style hierarchical routing system. Routes are Godot `Resource` objects with path strings and an `execute(context, delta)` callback. A `Router` manages the route map and dispatches requests by parsing path strings into typed `RequestData` objects. The path format allows embedding typed parameters inline (`/:velocity=1,2,3`) which are converted to GDScript types via the `PathParams` utility. The `enter`/`exit` lifecycle hooks are defined but not yet wired up, the top-level `Router` class is an empty stub, and the only test is a manual print-based scene. There are no signals, no autoloads, no addons, and no test framework.

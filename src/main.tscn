@@ -5,4 +5,4 @@
 [node name="Main" type="Node"]
 
 [node name="RouterTest" parent="." instance=ExtResource("1_eewff")]
-request_path = "/:lol=1"
+request_path = "/default/:force=1,2,3"

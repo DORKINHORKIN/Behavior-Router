@@ -1,19 +1,26 @@
 extends Node
 
-@export var request_path: String = "/lol/:velocity=1,2,3/:lol=4/:ha=lmao"
+@export var request_path: String:
+	set(value):
+		request_path = value
+		if (router):
+			router.request(value)
+		request_path_changed.emit(value)
+
+signal request_path_changed(path: String)
 @export var initial_routes: Array[Route]
 
-@onready var context := RoutingContext.new(initial_routes)
+@onready var router := Router.new(initial_routes)
 
 static func request(_path) -> Array[RequestData]:
-	return RoutingContext.generate_request_data(_path)
-const PathParams := RoutingContext.PathParams
+	return Router.generate_request_data(_path)
+const PathParams := Router.PathParams
 
 func _ready():
-	context.process_request(context.request(request_path))
+	request_path = request_path
 
 func _process(_delta):
-	context.process_request(context.request(request_path), _delta)
+	router.process_request(_delta)
 
 
 func _test():

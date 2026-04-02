@@ -14,3 +14,8 @@ config/name="Behavior Router"
 run/main_scene="uid://laj1hechb6dk"
 config/features=PackedStringArray("4.4")
 config/icon="res://icon.svg"
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true

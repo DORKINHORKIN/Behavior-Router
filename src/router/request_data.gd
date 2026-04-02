@@ -4,6 +4,7 @@ class_name RequestData
 var path: String = ""
 var params: Dictionary[String, String] = {}
 var route: Route
+var state: Dictionary = {}
 
 func _init(_path: String, _params: Dictionary[String, String], route_map: Dictionary[String, Route]) -> void:
 		self.path = _path
