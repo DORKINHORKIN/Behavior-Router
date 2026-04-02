@@ -10,7 +10,6 @@ static func request(_path) -> Array[RequestData]:
 const PathParams := RoutingContext.PathParams
 
 func _ready():
-	#var _request : Array[RequestData] = context.request(request_path)
 	context.process_request(context.request(request_path))
 
 func _process(_delta):
