@@ -1,0 +1,14 @@
+[gd_scene load_steps=5 format=3 uid="uid://cfaabaojak1k6"]
+
+[ext_resource type="Script" uid="uid://y7xkg03esdq0" path="res://src/router/test/test.gd" id="1_w087q"]
+[ext_resource type="Script" uid="uid://cvuobaa0xjea" path="res://src/router/route.gd" id="2_6n54f"]
+[ext_resource type="Script" uid="uid://dv8fijxp65ihg" path="res://src/router/test/test_route.gd" id="3_65jt1"]
+
+[sub_resource type="Resource" id="Resource_mfvjp"]
+script = ExtResource("3_65jt1")
+path = "/:lol"
+metadata/_custom_type_script = "uid://dv8fijxp65ihg"
+
+[node name="RouterTest" type="Node"]
+script = ExtResource("1_w087q")
+initial_routes = Array[ExtResource("2_6n54f")]([SubResource("Resource_mfvjp")])

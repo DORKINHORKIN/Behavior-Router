@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://laj1hechb6dk"]
+
+[ext_resource type="PackedScene" uid="uid://cfaabaojak1k6" path="res://src/router/test/router_test.tscn" id="1_eewff"]
+
+[node name="Main" type="Node"]
+
+[node name="RouterTest" parent="." instance=ExtResource("1_eewff")]
+request_path = "/:lol=1"
