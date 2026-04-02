@@ -5,14 +5,14 @@ signal request_path_changed(path: String)
 	set(value):
 		request_path = value
 		if (router):
-			router.request(value)
+			router.set_route(value)
 		request_path_changed.emit(value)
 
 @export var initial_routes: Array[Route]
 
 
-static func request(_path) -> Array[RequestData]:
-	return Router.generate_request_data(_path)
+static func request(_path) -> Array[RouteContext]:
+	return Router.make_context(_path)
 const ParamAPI := Router.ParamAPI
 
 @onready var router := Router.new(initial_routes)
@@ -22,7 +22,7 @@ func _ready():
 	request_path = request_path
 
 func _process(_delta):
-	router.process_request(_delta)
+	router.process(_delta)
 
 
 func _test():

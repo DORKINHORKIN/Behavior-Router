@@ -2,25 +2,24 @@ class_name Router
 extends Resource
 
 @export var route_map: Dictionary[String, Route]
-var data : Array[RequestData]
+var context : Array[RouteContext]
 
 # Lifecycle
 func _init(_routes) -> void:
 	route_map = generate_route_map(_routes)
 
-func request(route_path) :
-	data = generate_request_data(route_path, route_map)
+func set_route(route_path) :
+	context = make_context(route_path, route_map)
 
-func process_request( _delta := 0.0, _data: Array[RequestData] = data):
-	for req : RequestData in _data:
-		if req.route:
-			req.route.execute(self, _delta)
-	data = _data
+func process(_delta := 0.0, _context: Array[RouteContext] = context):
+	for c : RouteContext in _context:
+		if c.route:
+			c.route.execute(self, _delta)
 
-func get_current_request() -> RequestData:
-	var size = data.size()
+func get_current_context() -> RouteContext:
+	var size = context.size()
 	if size > 0:
-		return data[size-1]
+		return context[size-1]
 	return null
 
 # API
@@ -30,8 +29,8 @@ static func generate_route_map(routes: Array[Route]) -> Dictionary[String, Route
 		map[route.path] = route
 	return map
 
-static func generate_request_data(path = "", _route_map: Dictionary[String, Route] = {}) -> Array[RequestData]:
-	var data: Array[RequestData] = []
+static func make_context(path = "", _route_map: Dictionary[String, Route] = {}) -> Array[RouteContext]:
+	var _context: Array[RouteContext] = []
 	var walked = ""
 	for pathname: String in path.rsplit("/", false):
 		var pair: Dictionary[String, Variant] = {}
@@ -42,8 +41,8 @@ static func generate_request_data(path = "", _route_map: Dictionary[String, Rout
 			pair = {pathname.replace(":", ""): value }
 
 		walked += "/" + pathname
-		data.append(RequestData.new(walked, pair, _route_map))
-	return data
+		_context.append(RouteContext.new(walked, pair, _route_map))
+	return _context
 
 
 
